@@ -1,3 +1,14 @@
+> **This repository is the Ceffio build of the upstream solver.**
+> It is a fork of [git001/cert-manager-webhook-libdns](https://github.com/git001/cert-manager-webhook-libdns)
+> (MIT); the solver's code is upstream's, unmodified. What this fork adds is the
+> publication: the image `ghcr.io/ceffio-suite/acme-dns-webhook`, built from the
+> `Containerfile` at the tagged commit, for amd64 and arm64, with a CycloneDX
+> SBOM and a provenance attestation attached. The upstream workflow was removed
+> because it pushed to a namespace this fork does not own.
+>
+> Ceffio pins one version of this image in `internal/version` and deploys it,
+> only for DNS providers cert-manager does not know natively.
+
 # cert-manager-webhook-libdns
 
 [![Release](https://github.com/git001/cert-manager-webhook-libdns/actions/workflows/release-container.yml/badge.svg)](https://github.com/git001/cert-manager-webhook-libdns/actions/workflows/release-container.yml)
