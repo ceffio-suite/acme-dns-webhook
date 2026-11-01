@@ -1,0 +1,61 @@
+version: 2
+
+# ROUTINE UPDATES ONLY. Security updates (a vulnerable dependency) are handled by
+# Dependabot alerts and automated security fixes, both already enabled on this
+# repository: this file adds the scheduled ones.
+#
+# GROUPS, BECAUSE FIFTY PULL REQUESTS IS THE SAME AS NONE: one PR per ecosystem
+# per week for minor and patch. A MAJOR stays alone, with its own diff — that is
+# where a human has to read before merging.
+updates:
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Paris
+    open-pull-requests-limit: 5
+    groups:
+      go-deps:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    commit-message:
+      prefix: deps(go)
+
+  # THE IMAGE IS BUILT FROM A Containerfile, not a Dockerfile. Dependabot reads
+  # the docker ecosystem where it finds one; if it does not pick this one up, the
+  # base image simply stops being tracked here — the weekly Grype scan still
+  # reports what the published image contains.
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Paris
+    open-pull-requests-limit: 3
+    groups:
+      images:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    commit-message:
+      prefix: deps(docker)
+
+  # ACTIONS STAY PINNED BY COMMIT SHA, with their version in a comment.
+  # Dependabot rewrites the SHA and keeps the comment; it never replaces a SHA
+  # with a tag. Changing this would undo the pinning on the first run.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Paris
+    open-pull-requests-limit: 3
+    groups:
+      actions:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    commit-message:
+      prefix: deps(actions)
