@@ -1,0 +1,16 @@
+# Exceptions, one entry per vulnerability, each with its reason and its review
+# date. An exception without a reason is a blind spot with a nicer name.
+ignore:
+  # zlib, in the Alpine base image. The fix (1.4-r0) is not in alpine 3.24.4,
+  # the newest 3.24 the registry publishes today; 3.25 does not exist yet.
+  # THE BINARY DOES NOT LINK ZLIB: this is a static Go programme, and the base
+  # image is there for the CA bundle and the timezone data. The finding is real
+  # about the IMAGE and has no exploitable path through this workload.
+  # REVIEW BY 2027-01-31, or as soon as alpine 3.25 ships — then delete this
+  # entry and let the gate speak.
+  - vulnerability: CVE-2026-4738
+    package:
+      name: zlib
+    reason: >-
+      No fixed zlib in alpine 3.24.4 (the current default); the static binary
+      does not link zlib. Reviewed 2026-11-08, to revisit with alpine 3.25.
