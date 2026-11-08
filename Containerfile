@@ -4,7 +4,7 @@
 # platform ($BUILDPLATFORM) and produces a binary for $TARGETARCH. Building
 # natively under QEMU for arm64 took more than eighteen minutes here, for a
 # programme that compiles in seconds — the emulation, not the code, was the cost.
-FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS build_deps
+FROM --platform=$BUILDPLATFORM golang:1.27-alpine AS build_deps
 
 # TARGETOS / TARGETARCH are provided by BuildKit for each platform of a
 # multi-architecture build.
@@ -30,7 +30,7 @@ RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
     go build -o webhook -ldflags '-s -w -extldflags "-static"' .
 
 # Runtime stage
-FROM alpine:3.21
+FROM alpine:3.24
 
 ARG OCI_SOURCE="https://github.com/git001/cert-manager-webhook-libdns"
 ARG OCI_REVISION=""
