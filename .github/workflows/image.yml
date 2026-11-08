@@ -148,6 +148,16 @@ jobs:
           grype-version: v0.121.0
           cache-db: true
 
+      - name: Keep the report
+        # A GATE THAT FAILS WITHOUT ITS EVIDENCE COSTS A SECOND RUN: the JSON is
+        # the only way to read WHAT was found, and it dies with the runner.
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: grype-acme
+          path: grype-acme.json
+          if-no-files-found: ignore
+
       - name: Summarise the scan
         if: always()
         run: |
@@ -181,4 +191,16 @@ jobs:
           print()
           print("%d vulnérabilité(s) au total, %d avec un correctif."
                 % (sum(c[0] for c in compte.values()), sum(c[1] for c in compte.values())))
+          # LES FAITS, DANS LE JOURNAL AUSSI : un tableau de compteurs dit qu'il y
+          # a un problème, pas lequel. Le rapport complet part en artefact.
+          print()
+          print("Findings with a fix:")
+          for m in matches:
+              v = m.get("vulnerability") or {}
+              if (v.get("fix") or {}).get("state") != "fixed":
+                  continue
+              a = m.get("artifact") or {}
+              print("  %-9s %-32s %-20s fix=%s"
+                    % (v.get("severity"), a.get("name"), v.get("id"),
+                       ",".join((v.get("fix") or {}).get("versions") or [])))
           FIN_PYTHON
