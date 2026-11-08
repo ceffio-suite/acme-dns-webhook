@@ -133,6 +133,13 @@ jobs:
     permissions:
       contents: read
     steps:
+      # THE CONFIG HAS TO BE THERE: grype reads .grype.yaml from the working
+      # directory, and this job scanned a remote image without ever checking the
+      # repository out — so the documented exception was invisible, and the gate
+      # kept failing on the one finding it was written for.
+      - name: Check out the ignore list
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
       - name: Scan the image
         id: grype
         uses: anchore/scan-action@27805bf3b4e84b4a5c980df22ed233c00390a439 # v7.4.2
